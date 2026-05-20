@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    build: .
+    depends_on:
+      - redis
+      - db
+    environment:
+      - DATABASE_URL=postgis://postgres:postgres@db:5432/postgres
+      - REDIS_URL=redis://redis:6379/1
+    command: celery -A logiflow worker -l INFO
+
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgis://postgres:postgres@db:5432/postgres
+      - REDIS_URL=redis://redis:6379/1
+      - DEBUG=True
+    command: bash -c "python manage.py makemigrations accounts drivers deliveries dispatch analytics && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 config.asgi:application"
