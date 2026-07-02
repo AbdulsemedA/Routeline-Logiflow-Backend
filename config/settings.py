@@ -12,6 +12,10 @@ SECRET_KEY = env('SECRET_KEY', default="django-insecure-dummy")
 DEBUG = env.bool('DEBUG', default=True)
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://routeline-logiflow-server.onrender.com",
+]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
