@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 import environ
+import platform
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -119,5 +120,11 @@ else:
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
-GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal312.dll"
-GEOS_LIBRARY_PATH = "C:/OSGeo4W/bin/geos_c.dll"
+if platform.system() == "Windows":
+    GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal312.dll"
+    GEOS_LIBRARY_PATH = "C:/OSGeo4W/bin/geos_c.dll"
+else:
+    if "GDAL_LIBRARY_PATH" in locals():
+        del GDAL_LIBRARY_PATH
+    if "GEOS_LIBRARY_PATH" in locals():
+        del GEOS_LIBRARY_PATH
