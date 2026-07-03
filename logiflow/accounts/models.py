@@ -8,7 +8,8 @@ class User(AbstractUser):
         ADMIN = "admin", _("Admin")
         DRIVER = "driver", _("Driver")
         CUSTOMER = "customer", _("Customer")
+        UNASSIGNED = "unassigned", _("Unassigned")
 
     role = models.CharField(
-        max_length=20, choices=ROLES.choices, default=ROLES.CUSTOMER
+        max_length=20, choices=ROLES.choices, default=ROLES.UNASSIGNED
     )
