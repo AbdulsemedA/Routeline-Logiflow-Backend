@@ -44,7 +44,7 @@ def update_location(request):
     driver.save()
     
     from logiflow.realtime.emitters import emit_driver_move
-    emit_driver_move(driver.id, {"lat": lat, "lng": lng})
+    emit_driver_move(str(driver.id), {"lat": float(lat), "lng": float(lng)})
     
     return Response(DriverSerializer(driver).data)
 
