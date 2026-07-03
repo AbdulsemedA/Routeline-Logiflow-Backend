@@ -16,7 +16,9 @@ class Delivery(TimeStampedModel):
     customer_name = models.CharField(max_length=255)
     
     pickup = models.PointField(null=True)
+    pickup_label = models.CharField(max_length=255, blank=True, default="")
     dropoff = models.PointField(null=True)
+    dropoff_label = models.CharField(max_length=255, blank=True, default="")
     
     package_description = models.CharField(max_length=255)
     package_weight_kg = models.FloatField()

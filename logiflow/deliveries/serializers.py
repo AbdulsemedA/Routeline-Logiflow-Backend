@@ -28,10 +28,10 @@ class DeliverySerializer(serializers.ModelSerializer):
         
     def get_pickup(self, obj):
         if obj.pickup:
-            return {"lat": obj.pickup.y, "lng": obj.pickup.x}
+            return {"lat": obj.pickup.y, "lng": obj.pickup.x, "label": obj.pickup_label or None}
         return None
 
     def get_dropoff(self, obj):
         if obj.dropoff:
-            return {"lat": obj.dropoff.y, "lng": obj.dropoff.x}
+            return {"lat": obj.dropoff.y, "lng": obj.dropoff.x, "label": obj.dropoff_label or None}
         return None
