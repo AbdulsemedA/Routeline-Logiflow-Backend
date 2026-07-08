@@ -1,9 +1,4 @@
 from rest_framework import serializers
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.core.mail import send_mail
-from django.conf import settings
 from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,15 +15,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data, role=User.ROLES.UNASSIGNED, is_active=False)
         
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        
-        verification_link = f"{settings.FRONTEND_URL}/verify-email?uidb64={uid}&token={token}"
-        send_mail(
-            "Verify your Routeline account",
-            f"Please click the link below to verify your email address:\n\n{verification_link}",
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False,
-        )
+        from .tasks import send_verification_email
+        send_verification_email.delay_on_commit(user.pk)
         return user
