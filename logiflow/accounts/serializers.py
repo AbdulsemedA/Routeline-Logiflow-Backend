@@ -13,8 +13,4 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
     
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data, role=User.ROLES.UNASSIGNED, is_active=False)
-        
-        from .tasks import send_verification_email
-        send_verification_email.delay_on_commit(user.pk)
-        return user
+        return User.objects.create_user(**validated_data, role=User.ROLES.UNASSIGNED, is_active=True)
